@@ -8,9 +8,10 @@ CREATE TABLE account (
 
 CREATE TABLE employee (
 	id INT PRIMARY KEY AUTO_INCREMENT,
-	job_number INT UNIQUE NOT NULL,
+	job_number VARCHAR(30) UNIQUE NOT NULL,
 	name VARCHAR(30) NOT NULL,
 	gender VARCHAR(30),
+	age INT,
 	marital_status VARCHAR(30),
 	hire_year INT NOT NULL,
 	hire_month INT NOT NULL,

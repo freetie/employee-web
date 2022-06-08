@@ -25,6 +25,8 @@ public class EmployeeService {
 		account.setName(employee.getAccountName());
 		account.setPassword(employee.getAccountPassword());
 		accountDao.save(account);
+		account = accountDao.findByName(account.getName());
+		employee.setAccountId(account.getId());
 		employeeDao.save(employee);
 	}
 	
@@ -51,7 +53,7 @@ public class EmployeeService {
 		return employeeDao.findAll(queryParameters);
 	}
 	
-	public Integer count(Employee queryParameters) {
+	public Integer count(EmployeeQueryParameters queryParameters) {
 		return employeeDao.count(queryParameters);
 	}
 	

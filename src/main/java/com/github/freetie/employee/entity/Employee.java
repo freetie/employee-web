@@ -11,6 +11,7 @@ enum MaritalStatus {
 }
 
 public class Employee {
+	// table fields
 	private Integer id;
 	private String jobNumber;
 	private String name;
@@ -23,8 +24,6 @@ public class Employee {
 	private String email;
 	private String phone;
 	private Integer accountId;
-	private String accountName;
-	private String accountPassword;
 	private LocalDateTime birthDate;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
@@ -113,7 +112,17 @@ public class Employee {
 	public void setAccountId(Integer accountId) {
 		this.accountId = accountId;
 	}
-	public String getAccountName() {
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	// associated fields
+	private String accountName;
+	private String accountPassword;
+  public String getAccountName() {
 		return accountName;
 	}
 	public void setAccountName(String accountName) {
@@ -124,11 +133,5 @@ public class Employee {
 	}
 	public void setAccountPassword(String accountPassword) {
 		this.accountPassword = accountPassword;
-	}
-	public Integer getAge() {
-		return age;
-	}
-	public void setAge(Integer age) {
-		this.age = age;
 	}
 }
