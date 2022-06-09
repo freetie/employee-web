@@ -113,34 +113,39 @@
     </div>
     <script>
       let jobNumbers = [];
-      $.get('/job-number', (data) => {
+      $.get('/employee/job-number', (data) => {
         jobNumbers = data;
       });
 
       let accountNames = [];
-      $.get('/account/name', (data) => {
+      $.get('/employee/account/name', (data) => {
         accountNames = data;
       });
 
-      const $jobNumberInput = $('#job-number');
-      const $jobNumberFeedback = $('#job-number-feedback');
+      $(document).ready(() => {
+        // const $jobNumberInput = $('#job-number');
+        // const $jobNumberFeedback = $('#job-number-feedback');
 
-      $('#job-number').on('change', (event) => {
-        
-        if (!/^[A-Z][A-Za-z]{0,3}[0-9]{4,7}$/.test(event.target.value)) {
-          
-        }
+        // $('#job-number').on('change', (event) => {
+
+        //   if (!/^[A-Z][A-Za-z]{0,3}[0-9]{4,7}$/.test(event.target.value)) {
+
+        //   }
+        // })
+
+        const $form = $('form');
+        console.log($form);
+        $form.on('submit', (event) => {
+          console.log(123, form[0]);
+          if (!form[0].checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          $form.removeClass('was-validated');
+          $form.addClass('was-validated');
+        });
+
       })
-
-      const $form = $('form');
-      $form.on('submit', (event) => {
-        if (!form[0].checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        $form.removeClass('was-validated');
-        $form.addClass('was-validated');
-      });
 
     </script>
   </body>

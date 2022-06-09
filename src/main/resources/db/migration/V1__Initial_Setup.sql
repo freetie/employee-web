@@ -3,7 +3,7 @@ CREATE TABLE account (
     name VARCHAR(30) UNIQUE NOT NULL,
     password VARCHAR(60) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE employee (
@@ -21,5 +21,5 @@ CREATE TABLE employee (
 	birth_date TIMESTAMP,
 	created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now(),
-    account_id INT NOT NULL,
+    account_id INT NOT NULL
 );

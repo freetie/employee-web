@@ -20,6 +20,6 @@ public interface AccountDao {
 	@Select("SELECT * FROM account WHERE name = #{name}")
 	public Account findByName(String name);
 	
-	@Select("SELECT name FROM account WHERE}")
+	@Select("SELECT name FROM account")
 	public List<String> findAllNames();
 }

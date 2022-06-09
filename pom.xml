@@ -5,7 +5,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>employee</name>
-	<description>a practice project based on ssm framework</description>
+	<description>a practice project based on ssm framework.</description>
 
 	<dependencies>
 		<dependency>
