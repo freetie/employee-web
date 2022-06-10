@@ -24,7 +24,7 @@ public class Employee {
 	private String email;
 	private String phone;
 	private Integer accountId;
-	private LocalDateTime birthDate;
+	private String birthDate;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
@@ -88,10 +88,10 @@ public class Employee {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public LocalDateTime getBirthDate() {
+	public String getBirthDate() {
 		return birthDate;
 	}
-	public void setBirthDate(LocalDateTime birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 	public LocalDateTime getCreatedAt() {
