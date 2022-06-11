@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
   </head>
 
@@ -17,29 +18,23 @@
       <div class="card" style="margin-top: 16px;">
         <div class="card-body">
           <form action="/employee/create" novalidate method="post">
-            <input type="hidden" name="id">
-            <input type="hidden" name="accountId">
+            <input type="hidden" name="id"> <input type="hidden" name="accountId">
             <div class="mb-3">
               <label for="job-number" class="form-label">社員番号</label> <input type="text" class="form-control"
                 id="job-number" name="jobNumber" maxlength="8" pattern="[A-Z][A-Za-z]{0,3}[0-9]{4,7}" required />
               <div class="invalid-feedback" id="job-number-feedback">
-                4文字+4つの数字を入力してください、最初の文字は大文字になります。
-              </div>
+                4文字+4つの数字を入力してください、最初の文字は大文字になります。</div>
             </div>
             <div class="mb-3">
               <label for="name" class="form-label">名前</label> <input type="text" class="form-control" id="name"
                 name="name" required
                 pattern="^([\u{3005}\u{3007}\u{303b}\u{3400}-\u{9FFF}\u{F900}-\u{FAFF}\u{20000}-\u{2FFFF}][\u{E0100}-\u{E01EF}\u{FE00}-\u{FE02}]?)+$" />
-              <div class="invalid-feedback">
-                漢字を入力してください。
-              </div>
+              <div class="invalid-feedback">漢字を入力してください。</div>
             </div>
             <div class="mb-3">
               <label for="age" class="form-label">年齢</label> <input type="number" class="form-control" id="age"
                 name="age" min="18" max="70" />
-              <div class="invalid-feedback">
-                入力範囲は18〜70歳です。
-              </div>
+              <div class="invalid-feedback">入力範囲は18〜70歳です。</div>
             </div>
             <div class="mb-3">
               <label for="gender" class="form-label">性別</label>
@@ -68,8 +63,7 @@
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="maritalStatus" id="marital-status-married"
-                    value="MARRIED" />
-                  <label class="form-check-label" for="marital-status-married">既婚</label>
+                    value="MARRIED" /> <label class="form-check-label" for="marital-status-married">既婚</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="maritalStatus" id="marital-status-unmarried"
@@ -88,18 +82,19 @@
               <div class="invalid-feedback">受け入れられる日付の範囲は1960-01-01から2010-12-31の間です。</div>
             </div>
             <div class="mb-3">
-              <label for="email" class="form-label">Eメール</label> <input type="email" class="form-control" id="email" />
+              <label for="email" class="form-label">Eメール</label> <input type="email" class="form-control" id="email"
+                name="email" />
               <div class="invalid-feedback">正しいメールアドレスを入力してください。</div>
             </div>
             <div class="mb-3">
               <label for="phone" class="form-label">携帯番号</label> <input type="tel" class="form-control" id="phone"
-                pattern="^0[9872]0\d{8}$" />
+                pattern="^0[9872]0\d{8}$" name="phone" />
               <div class="invalid-feedback">正しい携帯番号を入力してください。</div>
             </div>
             <div class="mb-3">
               <label for="account-name" class="form-label">アカウント</label> <input type="text" class="form-control"
                 id="account-name" name="accountName" pattern="^[A-Z][A-Za-z]{7,15}$" required />
-              <div class="invalid-feedback">英語の文字を入力してください。最初の文字は大文字で、長さは8〜16文字です。</div>
+              <div class="invalid-feedback" id="account-name-feedback">英語の文字を入力してください。最初の文字は大文字で、長さは8〜16文字です。</div>
             </div>
             <div class="mb-3">
               <label for="account-password" class="form-label">パスワード</label> <input type="password" class="form-control"
@@ -135,15 +130,8 @@
       }
 
       $(document).ready(() => {
-        const $backButton = $('#back-button');
         const $submitButton = $('#submit-button');
         const $enterModifyButton = $('#enter-modify-button');
-        const $cancelModifyButton = $('#cancel-modify-button');
-        const $hireDateInput = $('#hire-date');
-        const $form = $('form');
-
-        $hireDateInput.attr('max', moment().format('YYYY-MM-DD'));
-
         if (isNew) {
           $enterModifyButton.hide();
         } else {
@@ -154,6 +142,51 @@
           $submitButton.hide();
         }
 
+        const $hireDateInput = $('#hire-date');
+        $hireDateInput.attr('max', moment().format('YYYY-MM-DD'));
+
+        const $jobNumberInput = $('#job-number');
+        $jobNumberInput.on('input', (e) => {
+          const $jobNumberFeedback = $('#job-number-feedback');
+          if (
+            _.includes(
+              _.filter(jobNumbers, jobNumberItem => jobNumberItem !== detail?.jobNumber),
+              e.target.value
+            )
+          ) {
+            $jobNumberInput[0].setCustomValidity('already-exists');
+            $jobNumberFeedback.text('社員番号は既に存在します。');
+          } else {
+            $jobNumberInput[0].setCustomValidity('');
+            $jobNumberFeedback.text('4文字+4つの数字を入力してください、最初の文字は大文字になります。');
+            // if ($jobNumberInput[0].validity.valid) {
+            //   $jobNumberInput[0].setCustomValidity('')
+            // }
+          }
+        });
+        const $accountNameInput = $('#account-name');
+        $accountNameInput.on('input', (e) => {
+          const $accountNameFeedback = $('#account-name-feedback');
+          if (
+            _.includes(
+              _.filter(accountNames, accountNameItem => accountNameItem !== detail?.accountName),
+              e.target.value
+            )
+          ) {
+            $accountNameInput[0].setCustomValidity('already-exists');
+            $accountNameFeedback.text('アカウントは既に存在します。');
+          } else {
+            $accountNameFeedback.text('英語の文字を入力してください。最初の文字は大文字で、長さは8〜16文字です。');
+            $accountNameInput[0].setCustomValidity('')
+            // if ($accountNameInput[0].validity.valid) {
+            //   $accountNameInput[0].setCustomValidity('')
+            // }
+          }
+        });
+
+        const $form = $('form');
+        const $backButton = $('#back-button');
+        const $cancelModifyButton = $('#cancel-modify-button');
         $backButton.on('click', () => {
           window.history.back();
         });
@@ -179,9 +212,8 @@
           if (window.confirm('修正を確認しますか？')) {
             $form.submit();
           }
-        })
+        });
         $form.on('submit', (event) => {
-          console.log(event);
           if (!$form[0].checkValidity()) {
             event.preventDefault();
             event.stopPropagation();
@@ -189,7 +221,7 @@
           $form.removeClass('was-validated');
           $form.addClass('was-validated');
         });
-      })
+      });
     </script>
   </body>
 

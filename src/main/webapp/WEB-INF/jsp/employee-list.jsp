@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 
@@ -12,6 +13,8 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.css" />
 <script
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
 </head>
 
 <body>
@@ -22,28 +25,41 @@
 		</div>
 		<div class="card" style="margin-top: 16px;">
 			<div class="card-body">
-				<form class="row gy-2 gx-3 align-items-center">
+				<form class="row gy-2 gx-3 align-items-center"
+					action="/employee/list" method="post">
+					<input type="hidden" id="page" name="page" value="${page}">
 					<div class="col-auto">
 						<label class="visually-hidden" for="jobNumber">社員番号</label> <input
 							type="text" class="form-control" id="jobNumber" name="jobNumber"
-							placeholder="社員番号" />
+							placeholder="社員番号" maxlength="8"
+							pattern="[A-Z][A-Za-z]{0,3}[0-9]{4,7}" />
 					</div>
 					<div class="col-auto">
 						<label class="visually-hidden" for="name">名前</label> <input
 							type="text" class="form-control" id="name" name="name"
-							placeholder="名前" />
+							placeholder="名前"
+							pattern="^([\u{3005}\u{3007}\u{303b}\u{3400}-\u{9FFF}\u{F900}-\u{FAFF}\u{20000}-\u{2FFFF}][\u{E0100}-\u{E01EF}\u{FE00}-\u{FE02}]?)+$" />
 					</div>
 					<div class="col-auto">
 						<label class="visually-hidden" for="age">年齢</label> <input
 							type="number" class="form-control" id="age" name="age"
-							placeholder="年齢" />
+							placeholder="年齢" min="18" max="70" />
 					</div>
 					<div class="col-auto">
 						<label class="visually-hidden" for="gender">性別</label> <select
 							class="form-select" id="gender" name="gender">
-							<option selected>未選択</option>
-							<option value="1">男</option>
-							<option value="2">女</option>
+							<option selected value="">未選択</option>
+							<option value="MALE">男</option>
+							<option value="FEMALE">女</option>
+						</select>
+					</div>
+					<div class="col-auto">
+						<label for="marital-status" class="visually-hidden">配偶者の有無</label>
+						<select class="form-select" id="marital-status"
+							name="maritalStatus">
+							<option selected value="">未選択</option>
+							<option value="MARRIED">既婚</option>
+							<option value="UNMARRIED">未婚</option>
 						</select>
 					</div>
 					<div class="col-auto">
@@ -96,8 +112,9 @@
 								<td>${employee.name}</td>
 								<td>${employee.age}</td>
 								<td>${employee.maritalStatus}</td>
-								<td>${employee.hireDate}</td>
-								<td>${employee.birthDate}</td>
+								<td>${employee.hireYear}-${employee.hireMonth}-${employee.hireDay}</td>
+								<td><fmt:formatDate value="${employee.birthDate}"
+										pattern="yyyy-MM-dd" /></td>
 								<td>${employee.email}</td>
 								<td>${employee.phone}</td>
 								<td><a href="/employee/${employee.id}">照会</a> <a

@@ -18,7 +18,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 @Configuration
 @ComponentScan(basePackages = "com.github.freetie.employee", excludeFilters = {
 		@ComponentScan.Filter(org.springframework.stereotype.Controller.class) })
-@MapperScan("com.github.freetie.employee.dao")
+@MapperScan(basePackages = "com.github.freetie.employee.dao")
 @PropertySource("classpath:application.properties")
 public class RootConfig {
 	@Value("${jdbc.driver-class-name}")
@@ -29,7 +29,7 @@ public class RootConfig {
 	private String username;
 	@Value("${jdbc.password}")
 	private String password;
-	
+
 	@Bean
 	public DataSource dataSource() {
 		DruidDataSource dataSource = new DruidDataSource();
@@ -39,18 +39,19 @@ public class RootConfig {
 		dataSource.setPassword(password);
 		return dataSource;
 	}
-	
+
 	@Bean
 	public SqlSessionFactory sqlSessionFactory() throws Exception {
 		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
 		factoryBean.setDataSource(dataSource());
 		factoryBean.setTypeAliasesPackage("com.github.freetie.employee.entity");
+		factoryBean.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
 //		factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:com/github/freetie/employee/dao/*.xml"));
 		return factoryBean.getObject();
 	}
-	
+
 	@Bean
-	public TransactionManager transactionManager(){
+	public TransactionManager transactionManager() {
 		return new DataSourceTransactionManager(dataSource());
 	}
 }
