@@ -20,7 +20,6 @@ public class AccountController {
 	@GetMapping("/account/name")
 	@ResponseBody
 	public List<String> getAccountNames() {
-		System.out.println(accountService.findAllNames());
 		return accountService.findAllNames();
 	}
 }

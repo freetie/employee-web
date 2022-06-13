@@ -31,53 +31,64 @@
 					<div class="col-auto">
 						<label class="visually-hidden" for="jobNumber">社員番号</label> <input
 							type="text" class="form-control" id="jobNumber" name="jobNumber"
-							placeholder="社員番号" maxlength="8"
-							pattern="[A-Z][A-Za-z]{0,3}[0-9]{4,7}" />
+							placeholder="社員番号" maxlength="8" pattern="\w*"
+							value="${params.jobNumber}" />
 					</div>
 					<div class="col-auto">
 						<label class="visually-hidden" for="name">名前</label> <input
 							type="text" class="form-control" id="name" name="name"
 							placeholder="名前"
-							pattern="^([\u{3005}\u{3007}\u{303b}\u{3400}-\u{9FFF}\u{F900}-\u{FAFF}\u{20000}-\u{2FFFF}][\u{E0100}-\u{E01EF}\u{FE00}-\u{FE02}]?)+$" />
+							pattern="^([\u{3005}\u{3007}\u{303b}\u{3400}-\u{9FFF}\u{F900}-\u{FAFF}\u{20000}-\u{2FFFF}][\u{E0100}-\u{E01EF}\u{FE00}-\u{FE02}]?)+$"
+							value="${params.name}" />
 					</div>
 					<div class="col-auto">
 						<label class="visually-hidden" for="age">年齢</label> <input
 							type="number" class="form-control" id="age" name="age"
-							placeholder="年齢" min="18" max="70" />
+							placeholder="年齢" min="18" max="70" value="${params.age}" />
 					</div>
 					<div class="col-auto">
 						<label class="visually-hidden" for="gender">性別</label> <select
 							class="form-select" id="gender" name="gender">
-							<option selected value="">未選択</option>
-							<option value="MALE">男</option>
-							<option value="FEMALE">女</option>
+							<option
+								${params.gender == null || params.gender == "" ? 'selected' : ''}
+								value="">未選択</option>
+							<option ${params.gender == 'MALE' ? 'selected' : ''} value="MALE">男</option>
+							<option ${params.gender == 'FEMALE' ? 'selected' : ''}
+								value="FEMALE">女</option>
 						</select>
 					</div>
 					<div class="col-auto">
 						<label for="marital-status" class="visually-hidden">配偶者の有無</label>
 						<select class="form-select" id="marital-status"
 							name="maritalStatus">
-							<option selected value="">未選択</option>
-							<option value="MARRIED">既婚</option>
-							<option value="UNMARRIED">未婚</option>
+							<option
+								${params.maritalStatus == null || params.maritalStatus == "" ? 'selected' : ''}
+								value="">未選択</option>
+							<option ${params.maritalStatus == 'MARRIED' ? 'selected' : ''}
+								value="MARRIED">既婚</option>
+							<option ${params.maritalStatus == 'UNMARRIED' ? 'selected' : ''}
+								value="UNMARRIED">未婚</option>
 						</select>
 					</div>
 					<div class="col-auto">
+						<fmt:formatDate value="${params.hireDate}" var="formattedHireDate"
+							pattern="yyyy-MM-dd" />
 						<label class="visually-hidden" for="hireDate">入社日</label> <input
 							type="date" class="form-control" id="hireDate" name="hireDate"
-							placeholder="入社日" />
+							placeholder="入社日" value="${formattedHireDate}" />
 					</div>
 					<div class="col-auto">
 						<label class="visually-hidden" for="birthYear">生年月日</label>
 						<div class="d-flex align-items-center">
 							<input type="number" style="width: 78px;" class="form-control"
 								id="birthYear" name="birthYear" placeholder="年" min="1990"
-								max="2999" /> <input type="number"
+								max="2999" value="${params.birthYear}" /> <input type="number"
 								style="width: 58px; margin-left: 4px;" class="form-control"
 								id="birthMonth" name="birthMonth" placeholder="月" min="1"
-								max="12" /> <input type="number"
+								max="12" value="${params.birthMonth}" /> <input type="number"
 								style="width: 58px; margin-left: 4px;" class="form-control"
-								id="birthDay" name="birthDay" placeholder="日" min="1" max="31" />
+								id="birthDay" name="birthDay" placeholder="日" min="1" max="31"
+								value="${params.birthDay}" />
 						</div>
 					</div>
 					<div class="col-auto">
@@ -95,6 +106,7 @@
 							<th scope="col">社員番号</th>
 							<th scope="col">名前</th>
 							<th scope="col">年齢</th>
+							<th scope="col">性別</th>
 							<th scope="col">配偶者の有無</th>
 							<th scope="col">入社日</th>
 							<th scope="col">生年月日</th>
@@ -111,32 +123,87 @@
 								<td>${employee.jobNumber}</td>
 								<td>${employee.name}</td>
 								<td>${employee.age}</td>
-								<td>${employee.maritalStatus}</td>
+								<td><c:choose>
+										<c:when test="${employee.gender == 'MALE'}">男</c:when>
+										<c:when test="${employee.gender == 'FEMALE'}">女</c:when>
+										<c:otherwise>未選択</c:otherwise>
+									</c:choose></td>
+								<td><c:choose>
+										<c:when test="${employee.maritalStatus == 'MARRIED'}">既婚</c:when>
+										<c:when test="${employee.maritalStatus == 'UNMARRIED'}">未婚</c:when>
+										<c:otherwise>未選択</c:otherwise>
+									</c:choose></td>
 								<td>${employee.hireYear}-${employee.hireMonth}-${employee.hireDay}</td>
 								<td><fmt:formatDate value="${employee.birthDate}"
 										pattern="yyyy-MM-dd" /></td>
 								<td>${employee.email}</td>
 								<td>${employee.phone}</td>
-								<td><a href="/employee/${employee.id}">照会</a> <a
-									href="/employee/${employee.id}.delete">削除</a></td>
+								<td><button type="button"
+										class="btn btn-link btn-sm detail-button" style="padding: 0;"
+										onclick="window.location.assign('/employee/${employee.id}')"
+										disabled>照会</button>
+									<button type="button" class="btn btn-link btn-sm delete-button"
+										style="padding: 0;" data-id="${employee.id}" disabled>削除</button>
 							</tr>
 						</c:forEach>
 					</tbody>
 				</table>
 				<nav style="display: flex; justify-content: flex-end;">
 					<ul class="pagination" style="margin-bottom: 0;">
-						<li class="page-item"><a class="page-link" href="#"
-							aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+						<li class="page-item ${page == 1 ? 'disabled' : ''}"><a
+							class="page-link" href="#" aria-label="Previous"> <span
+								aria-hidden="true">&laquo;</span>
 						</a></li>
-						<li class="page-item"><a class="page-link" href="#">1</a></li>
-						<li class="page-item"><a class="page-link" href="#"
-							aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+						<li class="page-item"><a class="page-link" href="#">${page}</a></li>
+						<li class="page-item ${page * 5 >= count ? 'disabled' : ''}"><a
+							class="page-link" href="#" aria-label="Next"> <span
+								aria-hidden="true">&raquo;</span>
 						</a></li>
 					</ul>
 				</nav>
 			</div>
 		</div>
 	</div>
+	<script>
+					const $form = $('form');
+					const $pageInput = $('#page');
+					const currentPage = parseInt($pageInput.val());
+					const $prevButton = $('.page-item').eq(0);
+					const $nextButton = $('.page-item').eq(2);
+					const $detailButtons = $('.detail-button');
+					const $deleteButtons = $('.delete-button');
+					const $radios = $('input[type="radio"]');
+
+					$radios.on('change', (e) => {
+						$detailButtons.prop('disabled', true);
+						$deleteButtons.prop('disabled', true);
+						$(e.target).parents('tr').find('button').prop('disabled', false);
+					})
+
+					$prevButton.on('click', () => {
+						if ($prevButton.hasClass('disabled')) return;
+						$pageInput.val(currentPage - 1);
+						$form.submit();
+					});
+
+					$nextButton.on('click', () => {
+						if ($nextButton.hasClass('disabled')) return;
+						$pageInput.val(currentPage + 1);
+						$form.submit();
+					});
+
+					$deleteButtons.on('click', (e) => {
+						if (confirm('削除を確認しますか？')) {
+							$.ajax({
+								url: '/employee/delete?id=' + $(e.target).attr('data-id'),
+								method: 'DELETE',
+							}).done(() => {
+								$form.submit();
+							});
+						}
+					});
+
+				</script>
 </body>
 
 </html>

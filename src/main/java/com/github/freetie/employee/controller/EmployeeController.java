@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,13 +32,21 @@ public class EmployeeController {
 	}
 
 	@RequestMapping("/list")
-	public String listPage(EmployeeQueryParameters employeeQueryParameters, Model model) {
-		if (employeeQueryParameters.getPage() == null || employeeQueryParameters.getPage() == 0) {
-			employeeQueryParameters.setPage(1);
+	public String listPage(EmployeeQueryParameters queryParameters, Model model) {
+		if (queryParameters.getPage() == null || queryParameters.getPage() == 0) {
+			queryParameters.setPage(1);
 		}
-		List<Employee> list = employeeService.findAll(employeeQueryParameters);
-		Integer count = employeeService.count(employeeQueryParameters);
-		model.addAttribute("page", employeeQueryParameters.getPage());
+		Date hireDate = queryParameters.getHireDate();
+		if (queryParameters.getHireDate() != null) {
+			String[] dateStrings = new SimpleDateFormat("yyyy-MM-dd").format(hireDate).toString().split("-");
+			queryParameters.setHireYear(Integer.parseInt(dateStrings[0]));
+			queryParameters.setHireMonth(Integer.parseInt(dateStrings[1]));
+			queryParameters.setHireDay(Integer.parseInt(dateStrings[2]));
+		}
+		List<Employee> list = employeeService.findAll(queryParameters);
+		Integer count = employeeService.count(queryParameters);
+		model.addAttribute("params", queryParameters);
+		model.addAttribute("page", queryParameters.getPage());
 		model.addAttribute("list", list);
 		model.addAttribute("count", count);
 		return "employee-list";
@@ -61,9 +70,8 @@ public class EmployeeController {
 
 	@PostMapping("/create")
 	public String create(Employee employee) {
-		System.out.println(employee.getHireDate());
-		Date hireDay = employee.getHireDate();
-		String[] dateStrings = new SimpleDateFormat("yyyy-MM-dd").format(hireDay).toString().split("-");
+		Date hireDate = employee.getHireDate();
+		String[] dateStrings = new SimpleDateFormat("yyyy-MM-dd").format(hireDate).toString().split("-");
 		employee.setHireYear(Integer.parseInt(dateStrings[0]));
 		employee.setHireMonth(Integer.parseInt(dateStrings[1]));
 		employee.setHireDay(Integer.parseInt(dateStrings[2]));
@@ -77,4 +85,9 @@ public class EmployeeController {
 		return employeeService.find(id);
 	}
 
+	@DeleteMapping("/delete")
+	@ResponseBody
+	public void delete(@RequestParam("id") Integer id) {
+		employeeService.delete(id);
+	}
 }

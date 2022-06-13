@@ -15,36 +15,11 @@ import com.github.freetie.employee.entity.EmployeeQueryParameters;
 @Mapper
 public interface EmployeeDao {
 	public class SqlProvider {
-		public String selectAll(EmployeeQueryParameters queryParameters) {
-			System.out.println(new SQL() {
-				{
-					SELECT("*");
-					FROM("employee");
-					LIMIT(5);
-					OFFSET((queryParameters.getPage() - 1) * 5);
-					if (queryParameters.getJobNumber() != null && queryParameters.getJobNumber() != "") {
-						WHERE("job_number LIKE '%#{jobNumber}%'");
-					}
-					if (queryParameters.getName() != null && queryParameters.getName() != "") {
-						WHERE("name LIKE '%#{name}%'");
-					}
-					if (queryParameters.getAge() != null && queryParameters.getAge() != 0) {
-						WHERE("age = #{age}");
-					}
-					if (queryParameters.getGender() != null) {
-						WHERE("gender = #{gender}");
-					}
-					if (queryParameters.getMaritalStatus() != null) {
-						WHERE("marital_status = #{maritalStatus}");
-					}
-				}
-			}.toString());
+		public SQL selectAllWhereSql(String startSelect, EmployeeQueryParameters queryParameters) {
 			return new SQL() {
 				{
-					SELECT("*");
+					SELECT(startSelect);
 					FROM("employee");
-					LIMIT(5);
-					OFFSET((queryParameters.getPage() - 1) * 5);
 					if (queryParameters.getJobNumber() != null && queryParameters.getJobNumber() != "") {
 						WHERE("job_number LIKE CONCAT('%', #{jobNumber}, '%')");
 					}
@@ -60,8 +35,58 @@ public interface EmployeeDao {
 					if (queryParameters.getMaritalStatus() != null) {
 						WHERE("marital_status = #{maritalStatus}");
 					}
+					if (queryParameters.getHireYear() != null) {
+						WHERE("hire_year = #{hireYear}");
+					}
+					if (queryParameters.getHireMonth() != null) {
+						WHERE("hire_month = #{hireMonth}");
+					}
+					if (queryParameters.getHireDay() != null) {
+						WHERE("hire_day = #{hireDay}");
+					}
+					if (queryParameters.getBirthYear() != null) {
+						WHERE("DATE_FORMAT(birth_date, '%Y') = #{birthYear}");
+					}
+					if (queryParameters.getBirthMonth() != null) {
+						WHERE("DATE_FORMAT(birth_date, '%c') = #{birthMonth}");
+					}
+					if (queryParameters.getBirthDay() != null) {
+						WHERE("DATE_FORMAT(birth_date, '%e') = #{birthDay}");
+					}
 				}
-			}.toString();
+			};
+		}
+
+		public String selectAll(EmployeeQueryParameters queryParameters) {
+			return selectAllWhereSql("*", queryParameters).LIMIT(5).OFFSET((queryParameters.getPage() - 1) * 5)
+					.toString();
+//			return new SQL() {
+//				{
+//					SELECT("*");
+//					FROM("employee");
+//					LIMIT(5);
+//					OFFSET((queryParameters.getPage() - 1) * 5);
+//					if (queryParameters.getJobNumber() != null && queryParameters.getJobNumber() != "") {
+//						WHERE("job_number LIKE CONCAT('%', #{jobNumber}, '%')");
+//					}
+//					if (queryParameters.getName() != null && queryParameters.getName() != "") {
+//						WHERE("name LIKE CONCAT('%', #{name}, '%')");
+//					}
+//					if (queryParameters.getAge() != null && queryParameters.getAge() != 0) {
+//						WHERE("age = #{age}");
+//					}
+//					if (queryParameters.getGender() != null) {
+//						WHERE("gender = #{gender}");
+//					}
+//					if (queryParameters.getMaritalStatus() != null) {
+//						WHERE("marital_status = #{maritalStatus}");
+//					}
+//				}
+//			}.toString();
+		}
+
+		public String count(EmployeeQueryParameters queryParameters) {
+			return selectAllWhereSql("COUNT(*)", queryParameters).toString();
 		}
 	}
 
@@ -73,7 +98,7 @@ public interface EmployeeDao {
 
 	public void update(Employee employee);
 
-	@Select("SELECT * FROM employee e WHERE id = #{id} LEFT JOIN account a ON e.account_id = a.id")
+	@Select("SELECT e.*, a.name account_name, a.password account_password FROM employee e LEFT JOIN account a ON e.account_id = a.id WHERE e.id = #{id}")
 	public Employee find(Integer id);
 
 	@Select("SELECT job_number FROM employee")
@@ -82,6 +107,6 @@ public interface EmployeeDao {
 	@SelectProvider(type = SqlProvider.class, method = "selectAll")
 	public List<Employee> findAll(EmployeeQueryParameters queryParameters);
 
-	@Select("SELECT COUNT(*) FROM employee")
+	@SelectProvider(type = SqlProvider.class, method = "count")
 	public Integer count(EmployeeQueryParameters queryParameters);
 }

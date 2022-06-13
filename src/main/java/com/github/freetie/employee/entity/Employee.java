@@ -1,9 +1,10 @@
 package com.github.freetie.employee.entity;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 enum Gender {
 	MALE, FEMALE
@@ -24,15 +25,22 @@ public class Employee {
 	private Integer hireYear;
 	private Integer hireMonth;
 	private Integer hireDay;
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
 	private Date hireDate;
 	private String email;
 	private String phone;
 	private Integer accountId;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date birthDate;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date createdAt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date updatedAt;
 
 	public Integer getId() {
 		return id;
@@ -130,19 +138,19 @@ public class Employee {
 		this.birthDate = birthDate;
 	}
 
-	public LocalDateTime getCreatedAt() {
+	public Date getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(LocalDateTime createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public LocalDateTime getUpdatedAt() {
+	public Date getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
+	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
