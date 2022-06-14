@@ -18,6 +18,7 @@
 </head>
 
 <body>
+	<jsp:include page="./top-bar.jsp" />
 	<div style="padding: 24px;">
 		<div class="d-flex align-items-center justify-content-between">
 			<h2 style="margin-bottom: 0;">社員リスト</h2>

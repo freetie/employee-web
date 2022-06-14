@@ -78,6 +78,17 @@ public class EmployeeController {
 		employeeService.save(employee);
 		return "redirect:list";
 	}
+	
+	@PostMapping("/update")
+	public String update(Employee employee) {
+		Date hireDate = employee.getHireDate();
+		String[] dateStrings = new SimpleDateFormat("yyyy-MM-dd").format(hireDate).toString().split("-");
+		employee.setHireYear(Integer.parseInt(dateStrings[0]));
+		employee.setHireMonth(Integer.parseInt(dateStrings[1]));
+		employee.setHireDay(Integer.parseInt(dateStrings[2]));
+		employeeService.update(employee);
+		return "redirect:list";
+	}
 
 	@GetMapping("/detail")
 	@ResponseBody

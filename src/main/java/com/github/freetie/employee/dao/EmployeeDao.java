@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.jdbc.SQL;
 
 import com.github.freetie.employee.entity.Employee;
@@ -96,10 +97,14 @@ public interface EmployeeDao {
 	@Delete("DELETE FROM employee WHERE id = #{id}")
 	public void delete(Integer id);
 
+	@Update("UPDATE employee SET name = #{name}, gender = #{gender}, age = #{age}, marital_status = #{maritalStatus}, hire_year = #{hireYear}, hire_month = #{hireMonth}, hire_day = #{hireDay}, email = #{email}, phone = #{phone}, birth_date = #{birthDate} WHERE id = #{id}")
 	public void update(Employee employee);
 
 	@Select("SELECT e.*, a.name account_name, a.password account_password FROM employee e LEFT JOIN account a ON e.account_id = a.id WHERE e.id = #{id}")
 	public Employee find(Integer id);
+	
+	@Select("SELECT * FROM employee WHERE account_id = #{accountId}")
+	public Employee findByAccountId(Integer accountId);
 
 	@Select("SELECT job_number FROM employee")
 	public List<String> findAllJobNumbers();

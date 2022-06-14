@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.github.freetie.employee.entity.Account;
 
@@ -17,6 +18,7 @@ public interface AccountDao {
 	@Delete("DELETE FROM account WHERE id=#{id}")
 	public void delete(Integer id);
 	
+	@Update("UPDATE account SET name = #{name}, password = #{password} WHERE id = #{id}")
 	public void update(Account account);
 	
 	@Select("SELECT * FROM account WHERE name = #{name}")

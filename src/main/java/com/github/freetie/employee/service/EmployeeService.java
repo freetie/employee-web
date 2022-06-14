@@ -49,6 +49,10 @@ public class EmployeeService {
 		return employeeDao.find(id);
 	}
 	
+	public Employee findByAccountId(Integer accountId) {
+		return employeeDao.findByAccountId(accountId);
+	}
+	
 	public List<Employee> findAll(EmployeeQueryParameters queryParameters) {
 		return employeeDao.findAll(queryParameters);
 	}
