@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 		registry.viewResolver(resolver);
 	}
-	
+
 	class SessionInterceptor implements HandlerInterceptor {
 
 		@Override

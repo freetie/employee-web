@@ -80,7 +80,7 @@
             </div>
             <div class="mb-3">
               <label class="form-label" for="birth-date">生年月日</label> <input type="date" class="form-control"
-                id="birth-date" name="birthDate" placeholder="生年月日" min="1990-01-01" max="2010-12-31" />
+                id="birth-date" name="birthDate" placeholder="生年月日" min="1960-01-01" max="2010-12-31" />
               <div class="invalid-feedback">受け入れられる日付の範囲は1960-01-01から2010-12-31の間です。</div>
             </div>
             <div class="mb-3">
