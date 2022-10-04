@@ -166,45 +166,49 @@
 		</div>
 	</div>
 	<script>
-					const $form = $('form');
-					const $pageInput = $('#page');
-					const currentPage = parseInt($pageInput.val());
-					const $prevButton = $('.page-item').eq(0);
-					const $nextButton = $('.page-item').eq(2);
-					const $detailButtons = $('.detail-button');
-					const $deleteButtons = $('.delete-button');
-					const $radios = $('input[type="radio"]');
+	$(document).ready(() => {
+		const $form = $('form');
+		const $pageInput = $('#page');
+		const currentPage = parseInt($pageInput.val());
+		const $prevButton = $('.page-item').eq(0);
+		const $nextButton = $('.page-item').eq(2);
+		const $detailButtons = $('.detail-button');
+		const $deleteButtons = $('.delete-button');
+		const $radios = $('input[type="radio"]');
+		
+		$radios.prop('checked', false);
 
-					$radios.on('change', (e) => {
-						$detailButtons.prop('disabled', true);
-						$deleteButtons.prop('disabled', true);
-						$(e.target).parents('tr').find('button').prop('disabled', false);
-					})
+		$radios.on('change', (e) => {
+			$detailButtons.prop('disabled', true);
+			$deleteButtons.prop('disabled', true);
+			$(e.target).parents('tr').find('button').prop('disabled', false);
+		})
 
-					$prevButton.on('click', () => {
-						if ($prevButton.hasClass('disabled')) return;
-						$pageInput.val(currentPage - 1);
-						$form.submit();
-					});
+		$prevButton.on('click', () => {
+			if ($prevButton.hasClass('disabled')) return;
+			$pageInput.val(currentPage - 1);
+			$form.submit();
+		});
 
-					$nextButton.on('click', () => {
-						if ($nextButton.hasClass('disabled')) return;
-						$pageInput.val(currentPage + 1);
-						$form.submit();
-					});
+		$nextButton.on('click', () => {
+			if ($nextButton.hasClass('disabled')) return;
+			$pageInput.val(currentPage + 1);
+			$form.submit();
+		});
 
-					$deleteButtons.on('click', (e) => {
-						if (confirm('削除を確認しますか？')) {
-							$.ajax({
-								url: '/employee/delete?id=' + $(e.target).attr('data-id'),
-								method: 'DELETE',
-							}).done(() => {
-								$form.submit();
-							});
-						}
-					});
-
-				</script>
+		$deleteButtons.on('click', (e) => {
+			if (confirm('削除を確認しますか？')) {
+				$.ajax({
+					url: '/employee/delete?id=' + $(e.target).attr('data-id'),
+					method: 'DELETE',
+				}).done(() => {
+					$pageInput.val('1');
+					$form.submit();
+				});
+			}
+		});
+	});
+	</script>
 </body>
 
 </html>

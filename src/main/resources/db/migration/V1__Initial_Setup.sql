@@ -18,8 +18,12 @@ CREATE TABLE employee (
 	hire_day INT NOT NULL,
 	email VARCHAR(60),
 	phone VARCHAR(30),
-	birth_date TIMESTAMP,
+	birth_date DATE,
 	created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now(),
     account_id INT NOT NULL
 );
+
+INSERT INTO account (id, name, password) VALUES (1, 'root', 'root');
+
+INSERT INTO employee (job_number, name, hire_year, hire_month, hire_day, account_id) VALUES ('root', 'root', 2022, 1, 1, 1);
